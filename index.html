@@ -8,20 +8,57 @@
   <link rel="stylesheet" href="css/icons.css">
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/script.js"></script>
-  <title>Document</title>
+  <title>Library 1A</title>
 </head>
 <body>
-  <h1>Heading</h1>
-  <h2>Heading</h2>
-  <h3>Heading</h3>
-  <h4>Heading</h4>
-  <h5>Heading</h5>
-  <h6>Heading</h6>
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque ullam animi facilis error sed, nobis nulla, nesciunt culpa voluptate beatae, deserunt minus soluta fugit modi excepturi atque doloribus magnam corporis.</p>
+  <header>
+    <div class="heading">
+      <div class="logo"><span class="ph--books-duotone"></span></div>
+      <div class="title">
+        <h1>Library 1A</h1>
+      </div>
+    </div>
+    <nav class="toolbar">
+      <ul class="tools">
+        <li role="button"><span class="ph--books-duotone"></span></li>
+        <li role="button"><span class="ph--book-open-duotone"></span></li>
+        <li role="button"><span class="ph--binoculars-duotone"></span></li>
+        <li role="button"><span class="ph--sort-ascending-duotone"></span></li>
+        <li role="button"><span class="ph--sort-descending-duotone"></span></li>
+      </ul>
+      <ul>
+        <li role="button" class="scheme-toggle">
+          <span class="ph--sun-duotone"></span>
+          <span class="ph--moon-stars-duotone"></span>
+        </li>
+        <li role="button"><span class="ph--info-duotone"></span></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container">
+
+  </main>
+  <footer>
+    <div>
+      <span>&copy; 2026 LastCapricorn</span>
+    </div>
+  </footer>
+  <template id="book-card-template">
+    <div class="book-card">
+      <p class="book-title"></p>
+      <p class="book-author"></p>
+      <p class="book-category"></p>
+      <p class="book-year"></p>
+      <p class="book-pages"></p>
+      <p class="book-read"></p>
+      <p class="book-rating"></p>
+    </div>
+  </template>
 </body>
 </html>
 
 <!--
+<span class=".ph--binoculars-duotone"></span>
 <span class="ph--book-duotone"></span>
 <span class="ph--book-open-duotone"></span>
 <span class="ph--book-open-text-duotone"></span>
