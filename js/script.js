@@ -55,21 +55,47 @@ const library1a = ( () => {
     container.appendChild(cloneCard);
   }
 
+  const stars = document.querySelectorAll(".star");
+  let rank = 0;
+  function setRank(ev) {
+    if (!ev.target.classList.contains("marked")) {
+      rank = Number(ev.target.getAttribute("value"));
+    } else {
+      rank = rank > Number(ev.target.getAttribute("value")) ?
+        Number(ev.target.getAttribute("value")) : --rank;
+    }
+    adjustStarDisplay();
+  }
+  function adjustStarDisplay() {
+      stars.forEach( star => {
+        if(star.getAttribute("value") <= rank) {
+          star.classList.add("marked");
+        } else {
+          star.classList.remove("marked");
+        }
+      });
+  }
+  stars.forEach( star => star.addEventListener("click", setRank));
+
   const shelfTest = new BookShelf("default");
-  console.log(shelfTest);
   exmpLibData.forEach( b => {
     const newBook = new Book(...b);
     shelfTest.bookshelf.push(newBook);
     createBookCard(newBook);
   })
   const bookTest = new Book("The Godfather", "Mario Puzo", "Crime Novel", 1969, 446, true, 5);
-  console.log(bookTest);
   createBookCard(bookTest);
+  library.push(shelfTest);
 
   const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
   document.querySelector(".scheme-toggle").addEventListener("click", () => {
     document.documentElement.style.setProperty("color-scheme",
       preferredScheme() === "light" ? "dark" : "light");
+    localStorage.setItem("lib1a_selected-theme", preferredScheme() );
   });
+
+  document.documentElement.style.setProperty("color-scheme",
+    `${ localStorage.getItem("lib1a_selected-theme") || preferredScheme() }`
+  );
 
 })();

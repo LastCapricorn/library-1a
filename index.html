@@ -19,30 +19,102 @@
       </div>
     </div>
     <nav class="toolbar">
-      <ul class="tools">
-        <li role="button"><span class="ph--books-duotone"></span></li>
-        <li role="button"><span class="ph--book-open-duotone"></span></li>
-        <li role="button"><span class="ph--binoculars-duotone"></span></li>
-        <li role="button"><span class="ph--sort-ascending-duotone"></span></li>
-        <li role="button"><span class="ph--sort-descending-duotone"></span></li>
-      </ul>
-      <ul>
-        <li role="button" class="scheme-toggle">
+      <div class="tools">
+        <button type="button" title="new bookshelf" command="show-modal" commandfor="bookshelf_dialog">
+          <span class="ph--books-duotone"></span>
+        </button>
+        <select name="bookshelfs" id="shelf-select">
+          <option value="example" selected>example</option>
+        </select>
+        <button type="button" title="new book" command="show-modal" commandfor="book_dialog">
+          <span class="ph--book-open-duotone"></span>
+        </button>
+        <button type="button">
+          <span class="ph--binoculars-duotone"></span>
+        </button>
+        <button type="button">
+          <span class="ph--sort-ascending-duotone"></span>
+        </button>
+        <button type="button">
+          <span class="ph--sort-descending-duotone"></span>
+        </button>
+      </div>
+      <div class="tools">
+        <button type="button" class="scheme-toggle">
           <span class="ph--sun-duotone"></span>
           <span class="ph--moon-stars-duotone"></span>
-        </li>
-        <li role="button"><span class="ph--info-duotone"></span></li>
-      </ul>
+        </button>
+        <button type="button" popovertarget="info_pop">
+          <span class="ph--info-duotone"></span>
+        </button>
+      </div>
     </nav>
   </header>
-  <main class="container">
+  <dialog id="book_dialog">
+    <form action="" method="dialog">
+      <button type="button" command="close" commandfor="book_dialog">
+        <span class="ph--x-square-duotone"></span>
+     </button>
+     <p class="form-head">Enter some information (at least the title) about your new book:</p>
+     <label for="book_title">Title:</label>
+     <input type="text" id="book_title" pattern="[\w\-]+" required>
+     <label for="book_author">Author:</label>
+     <input type="text" id="book_author" pattern="[\w\-]+">
+     <label for="book_category">Category:</label>
+     <input type="text" id="book_category" pattern="[\w\-]+">
+     <label for="book_year">Year:</label>
+     <input type="number" id="book_year" min="0" max="2026" value="2026" pattern="[0-9]{1,4}">
+     <label for="book_pages">Pages:</label>
+     <input type="number" id="book_pages" min="1" max="99999" value="1" pattern="[0-9]{1,5}">
+     <label for="book_read">Read:</label>
+     <input type="checkbox" id="book_read">
+     <p class="rating">Rating:</p>
+     <div id="rating">
+      <span class="ph--star-duotone star" role="button" value="1"></span>
+      <span class="ph--star-duotone star" role="button" value="2"></span>
+      <span class="ph--star-duotone star" role="button" value="3"></span>
+      <span class="ph--star-duotone star" role="button" value="4"></span>
+      <span class="ph--star-duotone star" role="button" value="5"></span>
+     </div>
+     <button type="submit">create!</button>
+    </form>
+  </dialog>
+  <dialog id="bookshelf_dialog">
+    <form action="" method="dialog">
+      <button type="button" command="close" commandfor="bookshelf_dialog">
+        <span class="ph--x-square-duotone"></span>
+      </button>
+      <label for="bookshelf-name">Please enter a name for your new bookshelf:</label>
+      <input type="text" id="bookshelf-name" minlength="2" pattern="[a-zA-Z][\w\-]+[a-zA-Z0-9]" placeholder="a-z, A-Z, 0-9, _, -">
+      <p class="explanation">Start with letter, end with letter or digit</p>
+      <button type="submit">create!</button>
+    </form>
+  </dialog>
+  <div id="info_pop" popover>
+    <ul>
+      <li>This is part of the Full Stack JavaScript Path from
+        <a href="https://www.theodinproject.com/lessons/node-path-javascript-library">The Odin Project</a>
+      </li>
+      <li>At Google Fonts you'll find
+        <a href="https://fonts.google.com/?query=special+elite">"Special Elite"</a>
+      </li>
+      <li>I used the duotone variant of
+        <a href="https://phosphoricons.com/">PhosphorIcons</a></li>
+      <li>You can have a look at my other
+        <a href="https://github.com/LastCapricorn">repositories</a>
+        on github
+      </li>
+    </ul>
+  </div>
 
-  </main>
+  <main class="container"></main>
+
   <footer>
     <div>
       <span>&copy; 2026 LastCapricorn</span>
     </div>
   </footer>
+
   <template id="book-card-template">
     <div class="book-card">
       <p class="book-title"></p>
@@ -54,6 +126,7 @@
       <p class="book-rating"></p>
     </div>
   </template>
+
 </body>
 </html>
 
@@ -99,4 +172,7 @@
 <span class="ph--warning-circle-duotone"></span>
 <span class="ph--warning-duotone"></span>
 <span class="ph--warning-octagon-duotone"></span>
+<span class="ph--x-duotone"></span>
+<span class="ph--x-circle-duotone"></span>
+<span class="ph--x-square-duotone"></span>
 -->
