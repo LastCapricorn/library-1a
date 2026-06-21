@@ -24,7 +24,6 @@
           <span class="ph--books-duotone"></span>
         </button>
         <select name="bookshelfs" id="shelf-select">
-          <option value="example" selected>example</option>
         </select>
         <button type="button" title="new book" command="show-modal" commandfor="book_dialog">
           <span class="ph--book-open-duotone"></span>
@@ -57,11 +56,11 @@
      </button>
      <p class="form-head">Enter some information (at least the title) about your new book:</p>
      <label for="book_title">Title:</label>
-     <input type="text" id="book_title" pattern="[\w\-]+" required>
+     <input type="text" id="book_title" pattern="[\w\- ]+" required>
      <label for="book_author">Author:</label>
-     <input type="text" id="book_author" pattern="[\w\-]+">
+     <input type="text" id="book_author" pattern="[\w\- ]+">
      <label for="book_category">Category:</label>
-     <input type="text" id="book_category" pattern="[\w\-]+">
+     <input type="text" id="book_category" pattern="[\w\- ]+">
      <label for="book_year">Year:</label>
      <input type="number" id="book_year" min="0" max="2026" value="2026" pattern="[0-9]{1,4}">
      <label for="book_pages">Pages:</label>
@@ -70,26 +69,43 @@
      <input type="checkbox" id="book_read">
      <p class="rating">Rating:</p>
      <div id="rating">
-      <span class="ph--star-duotone star" role="button" value="1"></span>
-      <span class="ph--star-duotone star" role="button" value="2"></span>
-      <span class="ph--star-duotone star" role="button" value="3"></span>
-      <span class="ph--star-duotone star" role="button" value="4"></span>
-      <span class="ph--star-duotone star" role="button" value="5"></span>
+       <label for="star1" class="star">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" id="star1" value="1">
+       </label>
+       <label for="star2" class="star">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" id="star2" value="2">
+       </label>
+       <label for="star3" class="star">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" id="star3" value="3">
+       </label>
+       <label for="star4" class="star">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" id="star4" value="4">
+       </label>
+       <label for="star5" class="star">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" id="star5" value="5">
+       </label>
      </div>
      <button type="submit">create!</button>
     </form>
   </dialog>
+
   <dialog id="bookshelf_dialog">
-    <form action="" method="dialog">
-      <button type="button" command="close" commandfor="bookshelf_dialog">
+    <form action="#" method="dialog" name="bookshelf_form" id="bookshelf_form">
+      <button type="button" id="bookshelf-form_cancel" command="close" commandfor="bookshelf_dialog">
         <span class="ph--x-square-duotone"></span>
       </button>
-      <label for="bookshelf-name">Please enter a name for your new bookshelf:</label>
-      <input type="text" id="bookshelf-name" minlength="2" pattern="[a-zA-Z][\w\-]+[a-zA-Z0-9]" placeholder="a-z, A-Z, 0-9, _, -">
+      <label for="bookshelf_name">Please enter a name for your new bookshelf:</label>
+      <input type="text" id="bookshelf_name" name="bookshelf_name" minlength="2" pattern="[a-zA-Z][\w\-]+[a-zA-Z0-9]" placeholder="a-z, A-Z, 0-9, _, -">
       <p class="explanation">Start with letter, end with letter or digit</p>
-      <button type="submit">create!</button>
+      <button type="submit" id="bookshelf-form_submit" form="bookshelf_form">create!</button>
     </form>
   </dialog>
+
   <div id="info_pop" popover>
     <ul>
       <li>This is part of the Full Stack JavaScript Path from
@@ -113,6 +129,7 @@
     <div>
       <span>&copy; 2026 LastCapricorn</span>
     </div>
+    <button type="button">clear localStorage</button>
   </footer>
 
   <template id="book-card-template">
@@ -131,6 +148,8 @@
 </html>
 
 <!--
+<form action="https://httpbin.org/post" method="post" name="bookshelf_form" id="bookshelf_form">
+
 <span class=".ph--binoculars-duotone"></span>
 <span class="ph--book-duotone"></span>
 <span class="ph--book-open-duotone"></span>

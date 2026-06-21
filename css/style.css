@@ -135,6 +135,7 @@ button {
   top: 3px;
   left: 3px;
 }
+
 button:has([class*="info"]) {
   anchor-name: --info;
 }
@@ -172,17 +173,21 @@ dialog button[type="submit"] {
   position: fixed;
   position-anchor: --book;
   position-area: bottom;
-  width: min(90dvw, 400px);
+  max-width: 100%;
+  width: min(93dvw, 400px);
   margin-block-start: 0.5rem;
   margin-inline-start: 0.5rem;
+  padding: 0.5rem;
   background-color: color(from var(--bg-body) srgb r g b / 0.9);
   color: var(--ch-li);
   border: 1px solid var(--ch-li);
   outline: 2px dashed var(--ch-li);
   outline-offset: -5px;
+
   form {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: 90px minmax(100px, 1fr);
+    grid-template-rows: 30px 70px;
     grid-auto-rows: 40px;
     grid-auto-flow: row;
     align-items: center;
@@ -190,15 +195,16 @@ dialog button[type="submit"] {
   button {
     grid-column: 2;
   }
-  button span {
+  [class^="ph--x"] {
     position: absolute;
     font-size: 2rem;
     color: var(--ch-li);
   }
   .form-head {
     grid-column: span 2;
+    padding-inline: 0.2rem;
   }
-  label,
+  [for^="book"],
   .rating {
     justify-self: end;
     padding-inline-end: 0.5rem;
@@ -206,14 +212,44 @@ dialog button[type="submit"] {
   input {
     color: var(--ch-li);
   }
+  [id="book_read"] {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+    width: 1.4rem;
+    aspect-ratio: 1 / 1;
+    border: 2px dotted var(--ch-li);
+  }
+  [id="book_read"]::before {
+    content: "\2714";
+    position: absolute;
+    top: -0.9rem;
+    left: -0.2rem;
+    font-size: 2.5rem;
+    color: currentColor;
+    visibility: hidden;
+  }
+  [id="book_read"]:checked::before {
+    visibility: visible;
+  }
   #rating {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+    align-content: center;
   }
   .star {
     font-size: 1.25rem;
     cursor: pointer;
   }
-  .star.marked {
+  input[id^="star"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  label:has(input:checked) {
     color: gold;
   }
 }
@@ -222,7 +258,8 @@ dialog button[type="submit"] {
   position: fixed;
   position-anchor: --bookshelf;
   position-area: bottom span-right;
-  width: min(90dvw, 400px);
+  max-width: 100%;
+  width: min(93dvw, 400px);
   margin-block-start: 0.5rem;
   margin-inline-start: 0.5rem;
   background-color: color(from var(--bg-body) srgb r g b / 0.9);

@@ -18,18 +18,18 @@ const library1a = ( () => {
 
   const library = [];
 
-  function BookShelf(name) {
-    if (!new.target) throw Error("Missing Operator", "The 'new' operator is required for using the constructor function.");
+  function Bookshelf(name) {
+    if (!new.target) throw Error("The 'new' operator is required for using the constructor function.");
     if (arguments[0] === "" || arguments[0] === undefined)
-      throw Error("Missing Argument", "The bookshelf needs a name.");
+      throw Error("The bookshelf needs a name.");
     this.name = name;
-    this.bookshelf = [];
+    this[name] = [];
   }
 
   function Book(title, author = "", category = "", year = 2026, pages = 0, read = false, rating = 0) {
-    if (!new.target) throw Error("Missing Operator", "The 'new' operator is required for using the constructor function.");
+    if (!new.target) throw Error("The 'new' operator is required for using the constructor function.");
     if (arguments[0] === "" || arguments[0] === undefined)
-      throw Error("Missing Argument", "The Book needs at least a title.");
+      throw Error("The Book needs at least a title.");
     this.title = title;
     this.author = author;
     this.category = category;
@@ -40,8 +40,21 @@ const library1a = ( () => {
     this.uuid = crypto.randomUUID();
   }
 
+  const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
+  const getStoredIndex = () => localStorage.getItem("lib1a_stored-index");
+  const storeIndex = number => localStorage.setItem("lib1a_stored-index", number);
+  const getIndex = value => library.findIndex( shelf => shelf.name === value);
+  const storeLibrary = () => localStorage.setItem("lib1a_library", JSON.stringify(library));
+  const getStoredLibrary = () =>JSON.parse(localStorage.getItem("lib1a_library"));
+  const container = document.querySelector(".container");
+  const selectBookshelf = document.querySelector("#shelf-select");
+  const bookshelfDialog = document.querySelector("#bookshelf_dialog");
+  const bookshelfForm = document.querySelector("#bookshelf_form");
+  const inputBookshelfName = document.querySelector("#bookshelf_name");
+  const stars = document.querySelectorAll(".star input");
+  let rating = 0;
+
   function createBookCard(book) {
-    const container = document.querySelector(".container");
     const template = document.querySelector("#book-card-template");
     const cloneCard = document.importNode(template.content, true);
     cloneCard.querySelector(".book-card").setAttribute("id", book.uuid);
@@ -55,47 +68,102 @@ const library1a = ( () => {
     container.appendChild(cloneCard);
   }
 
-  const stars = document.querySelectorAll(".star");
-  let rank = 0;
-  function setRank(ev) {
-    if (!ev.target.classList.contains("marked")) {
-      rank = Number(ev.target.getAttribute("value"));
-    } else {
-      rank = rank > Number(ev.target.getAttribute("value")) ?
-        Number(ev.target.getAttribute("value")) : --rank;
-    }
-    adjustStarDisplay();
+  function changeBookshelf() {
+    container.querySelectorAll("div").forEach( div => div.remove());
+    storeIndex(getIndex(selectBookshelf.value));
+    library[getStoredIndex()][library[getStoredIndex()].name].forEach( bookData => createBookCard(bookData));
   }
-  function adjustStarDisplay() {
-      stars.forEach( star => {
-        if(star.getAttribute("value") <= rank) {
-          star.classList.add("marked");
-        } else {
-          star.classList.remove("marked");
-        }
+
+  function addBookshelfOption(name, selected="true") {
+    console.log(selected);
+    const newOption = document.createElement("option");
+    newOption.setAttribute("value", name);
+    if(selected) newOption.setAttribute("selected", "");
+    newOption.textContent  = name;
+    selectBookshelf.appendChild(newOption);
+  }
+
+  function createBookshelf(ev) {
+    ev.preventDefault();
+    if (!inputBookshelfName.value) return;
+    try {
+      const newBookshelf = new Bookshelf(inputBookshelfName.value);
+      library.push(newBookshelf);
+      storeLibrary();
+      storeIndex(library.length - 1);
+      addBookshelfOption(inputBookshelfName.value);
+      changeBookshelf();
+      bookshelfForm.reset();
+      bookshelfDialog.close();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function initLibrary() {
+    if(!getStoredLibrary()) {
+      const exampleBookshelf = new Bookshelf("example");
+      exmpLibData.forEach( bookData => {
+        const newBook = new Book(...bookData);
+        exampleBookshelf[exampleBookshelf.name].push(newBook);
+        createBookCard(newBook);
+      });
+      library.push(exampleBookshelf);
+      storeLibrary();
+      storeIndex(0);
+    } else {
+      library.push(...getStoredLibrary());
+      library[getStoredIndex()][library[getStoredIndex()].name].forEach( bookData => createBookCard(bookData));
+    }
+    library.forEach( shelf => addBookshelfOption(shelf.name, getIndex(shelf.name) === Number(getStoredIndex()) ? true : false));
+  }
+
+  function setStarDisplay() {
+    stars.forEach( star => {
+      if(star.value <= rating) {
+        star.checked = true;
+      } else {
+        star.checked = false;
+      }
       });
   }
-  stars.forEach( star => star.addEventListener("click", setRank));
 
-  const shelfTest = new BookShelf("default");
-  exmpLibData.forEach( b => {
-    const newBook = new Book(...b);
-    shelfTest.bookshelf.push(newBook);
-    createBookCard(newBook);
-  })
-  const bookTest = new Book("The Godfather", "Mario Puzo", "Crime Novel", 1969, 446, true, 5);
-  createBookCard(bookTest);
-  library.push(shelfTest);
+  function setRating(ev) {
+    if (ev.target.checked) {
+      rating = Number(ev.target.value);
+    } else {
+      rating = rating > Number(ev.target.value) ?
+        Number(ev.target.value) : --rating;
+    }
+    setStarDisplay();
+  }
 
-  const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
+  selectBookshelf.addEventListener("change", changeBookshelf);
+  bookshelfForm.addEventListener("submit", createBookshelf);
+  inputBookshelfName.addEventListener("input", () => {
+    if(library.every( shelf => shelf.name !== inputBookshelfName.value)) {
+      inputBookshelfName.setCustomValidity("");
+    } else {
+      inputBookshelfName.setCustomValidity("A bookshelf with this name already exists!");
+    }
+  });
+  stars.forEach( star => star.addEventListener("change", setRating));
+  document.querySelector("footer button").addEventListener("click", () => {
+    localStorage.clear();
+    while(library.length) library.pop();
+  });
   document.querySelector(".scheme-toggle").addEventListener("click", () => {
     document.documentElement.style.setProperty("color-scheme",
       preferredScheme() === "light" ? "dark" : "light");
     localStorage.setItem("lib1a_selected-theme", preferredScheme() );
   });
-
   document.documentElement.style.setProperty("color-scheme",
     `${ localStorage.getItem("lib1a_selected-theme") || preferredScheme() }`
   );
 
+  initLibrary();
+
 })();
+
+  // const bookTest = new Book("The Godfather", "Mario Puzo", "Crime Novel", 1969, 446, true, 5);
+  // createBookCard(bookTest);
