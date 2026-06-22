@@ -49,8 +49,9 @@
       </div>
     </nav>
   </header>
+
   <dialog id="book_dialog">
-    <form action="" method="dialog">
+    <form action="#" method="dialog" name="book_form" id="book_form">
       <button type="button" command="close" commandfor="book_dialog">
         <span class="ph--x-square-duotone"></span>
      </button>
@@ -90,7 +91,7 @@
          <input type="checkbox" id="star5" value="5">
        </label>
      </div>
-     <button type="submit">create!</button>
+     <button type="submit" id="book-form_submit" form="book_form">create!</button>
     </form>
   </dialog>
 
@@ -120,6 +121,11 @@
         <a href="https://github.com/LastCapricorn">repositories</a>
         on github
       </li>
+      <li>
+        You can
+        <button type="button">clear localStorage</button>
+        before you close this page or for testing purposes
+      </li>
     </ul>
   </div>
 
@@ -129,18 +135,29 @@
     <div>
       <span>&copy; 2026 LastCapricorn</span>
     </div>
-    <button type="button">clear localStorage</button>
   </footer>
 
   <template id="book-card-template">
     <div class="book-card">
-      <p class="book-title"></p>
+      <h3 class="book-title"></h3>
       <p class="book-author"></p>
+      <span class="sp-cat">Category:</span>
       <p class="book-category"></p>
+      <span class="sp-year">First Published:</span>
       <p class="book-year"></p>
+      <span class="sp-pages">Pages:</span>
       <p class="book-pages"></p>
       <p class="book-read"></p>
-      <p class="book-rating"></p>
+      <div class="book-rating">
+        <span class="ph--star-duotone"></span>
+        <span class="ph--star-duotone"></span>
+        <span class="ph--star-duotone"></span>
+        <span class="ph--star-duotone"></span>
+        <span class="ph--star-duotone"></span>
+      </div>
+      <button type="button" class="trash">
+        <span class="ph--trash-duotone"></span>
+      </button>
     </div>
   </template>
 
