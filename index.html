@@ -123,7 +123,7 @@
       </li>
       <li>
         You can
-        <button type="button">clear localStorage</button>
+        <button type="button" popovertarget="info_pop" popovertargetaction="hide">clear localStorage</button>
         before you close this page or for testing purposes
       </li>
     </ul>
@@ -141,21 +141,37 @@
     <div class="book-card">
       <h3 class="book-title"></h3>
       <p class="book-author"></p>
-      <span class="sp-cat">Category:</span>
+      <span class="span-category">Category:</span>
       <p class="book-category"></p>
-      <span class="sp-year">First Published:</span>
+      <span class="span-year">First Published:</span>
       <p class="book-year"></p>
-      <span class="sp-pages">Pages:</span>
+      <span class="span-pages">Pages:</span>
       <p class="book-pages"></p>
-      <p class="book-read"></p>
+      <label class="label-read"></label>
+      <input type="checkbox" class="book-read">
       <div class="book-rating">
-        <span class="ph--star-duotone"></span>
-        <span class="ph--star-duotone"></span>
-        <span class="ph--star-duotone"></span>
-        <span class="ph--star-duotone"></span>
-        <span class="ph--star-duotone"></span>
+       <label class="rate-label">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" class="rate-input" value="1">
+       </label>
+       <label class="rate-label">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" class="rate-input" value="2">
+       </label>
+       <label class="rate-label">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" class="rate-input" value="3">
+       </label>
+       <label class="rate-label">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" class="rate-input" value="4">
+       </label>
+       <label class="rate-label">
+         <span class="ph--star-duotone"></span>
+         <input type="checkbox" class="rate-input" value="5">
+       </label>
       </div>
-      <button type="button" class="trash">
+      <button type="button" class="button-trash">
         <span class="ph--trash-duotone"></span>
       </button>
     </div>
@@ -165,8 +181,6 @@
 </html>
 
 <!--
-<form action="https://httpbin.org/post" method="post" name="bookshelf_form" id="bookshelf_form">
-
 <span class=".ph--binoculars-duotone"></span>
 <span class="ph--book-duotone"></span>
 <span class="ph--book-open-duotone"></span>

@@ -82,6 +82,7 @@ input, select, button {
 button {
   cursor: pointer;
 }
+
 .heading {
   display:flex;
   gap: 1.0rem;
@@ -183,7 +184,6 @@ dialog button[type="submit"] {
   border: 1px solid var(--ch-li);
   outline: 2px dashed var(--ch-li);
   outline-offset: -5px;
-
   form {
     display: grid;
     grid-template-columns: 90px minmax(100px, 1fr);
@@ -300,6 +300,7 @@ dialog button[type="submit"] {
     grid-area: submit;
   }
 }
+
 #info_pop:popover-open {
   position: fixed;
   position-anchor: --info;
@@ -361,45 +362,78 @@ dialog button[type="submit"] {
     ". trash";
   justify-items: center;
   align-items: center;
-
   .book-title {
     grid-area: title;
   }
   .book-author {
     grid-area: author;
   }
-  .sp-cat {
+  .span-category {
     grid-area: sp-cat;
   }
   .book-category {
     grid-area: category;
   }
-  .sp-year {
+  .span-year {
     grid-area: sp-year;
   }
   .book-year {
     grid-area: year;
   }
-  .sp-pages {
+  .span-pages {
     grid-area: sp-pages;
   }
   .book-pages {
     grid-area: pages;
   }
+  .label-read,
   .book-read {
     grid-area: read;
   }
+  .book-read {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+    justify-self: end;
+    margin-right: 3rem;
+    width: 1.4rem;
+    aspect-ratio: 1 / 1;
+    border: 2px dotted var(--ch-li);
+  }
+  .book-read::before {
+    content: "\2714";
+    position: absolute;
+    top: -0.9rem;
+    left: -0.2rem;
+    font-size: 2.5rem;
+    color: currentColor;
+    visibility: hidden;
+  }
+  .book-read:checked::before {
+    visibility: visible;
+  }
   .book-rating {
     grid-area: rating;
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+    align-content: center;
   }
-  .book-rating span {
-    font-size: 1.4rem;
+  [class="rate-label"] {
+    font-size: 1.25rem;
+    cursor: pointer;
   }
-  .book-rating span.colored {
+  [class="rate-input"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  [class="rate-label"]:has(input:checked) {
     color: gold;
   }
-  .trash {
+  .button-trash {
     grid-area: trash;
     justify-self: end;
     width: 28px;
@@ -414,9 +448,7 @@ dialog button[type="submit"] {
     justify-content: center;
     align-items: center;
   }
-  .trash span {
-  }
-  [class^="sp-"] {
+  [class^="span-"] {
     justify-self: right;
     align-self: start;
     color: var(--ch-li)

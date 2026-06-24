@@ -39,80 +39,92 @@ const library1a = ( () => {
     this.rating = rating;
     this.uuid = uuid;
   }
-
-  Book.prototype.bookcard = {};
-
   Book.prototype.generateUuid = function() {
-    this.uuid = crypto.randomUUID();
+    this.uuid = this.uuid === "" ? crypto.randomUUID() : this.uuid;
+  }
+  Book.prototype.createBookcard = function() {
+    const template = document.querySelector("#book-card-template");
+    const card = document.importNode(template.content, true);
+
+    card.querySelector(".book-card").dataset.uuid = this.uuid;
+    card.querySelector(".book-card").addEventListener("change", handleChangeEvent);
+
+    card.querySelector(".book-title").textContent = this.title;
+    card.querySelector(".book-author").textContent = this.author;
+    card.querySelector(".book-category").textContent = this.category;
+    card.querySelector(".book-year").textContent = this.year;
+    card.querySelector(".book-pages").textContent = this.pages;
+
+    card.querySelector(".label-read").setAttribute("for", `${this.uuid}-read`);
+    card.querySelector(".label-read").textContent = this.read ? "already read" : "not read yet";
+
+    card.querySelector(".book-read").setAttribute("id", `${this.uuid}-read`);
+    if (this.read) card.querySelector(".book-read").setAttribute("checked", "");
+
+    let count = 1;
+    card.querySelectorAll(".book-rating label").forEach( rateLabel => {
+      rateLabel.setAttribute("for", `${this.uuid}-${count++}`);
+    });
+
+    count = 1;
+    card.querySelectorAll(".book-rating input").forEach ( rateInput => {
+      if (this.rating >= count) rateInput.setAttribute("checked", "");
+      rateInput.setAttribute("id", `${this.uuid}-${count++}`);
+    });
+
+    card.querySelector(".button-trash").dataset.uuid = this.uuid;
+    card.querySelector(".button-trash").addEventListener("click", removeBook);
+
+    container.prepend(card);
   }
 
-  Book.prototype.setBookcard = function() {
-    this.bookcard = createBookcard(this);
-  }
-
-  Book.prototype.getBookcard = function() {
-    return this.bookcard;
-  };
-
-  const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
-  const getStoredIndex = () => localStorage.getItem("lib1a_stored-index");
-  const storeIndex = number => localStorage.setItem("lib1a_stored-index", number);
-  const getIndex = value => library.findIndex( shelf => shelf.name === value);
-  const storeLibrary = () => localStorage.setItem("lib1a_library", JSON.stringify(library));
-  const getStoredLibrary = () =>JSON.parse(localStorage.getItem("lib1a_library"));
-  const currentBookshelf = () => library[getStoredIndex()][library[getStoredIndex()].name];
   const container = document.querySelector(".container");
   const selectBookshelf = document.querySelector("#shelf-select");
   const bookshelfDialog = document.querySelector("#bookshelf_dialog");
   const bookshelfForm = document.querySelector("#bookshelf_form");
   const inputBookshelfName = document.querySelector("#bookshelf_name");
+
   const bookDialog = document.querySelector("#book_dialog");
   const bookForm = document.querySelector("#book_form");
-  const stars = document.querySelectorAll(".star input");
+  const bookFormData = bookForm.querySelectorAll("input:not(.star input)");
+  const bookFormRating = bookForm.querySelectorAll(".star input");
+  const bookFormStars = document.querySelectorAll(".star input");
   let rating = 0;
 
-  function displayBookcard(book) {
-    container.prepend(book.getBookcard());
-  }
+  const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
+  const getStoredLibrary = () =>JSON.parse(localStorage.getItem("lib1a_library"));
+  const getStoredIndex = () => localStorage.getItem("lib1a_stored-index");
+  const storeIndex = number => localStorage.setItem("lib1a_stored-index", number);
+  const getBookshelfIndex = value => library.findIndex( shelf => shelf.name === value);
+  const storeLibrary = () => localStorage.setItem("lib1a_library", JSON.stringify(library));
+  const currentBookshelf = () => library[getStoredIndex()][library[getStoredIndex()].name];
 
-  function createBookcard(book) {
-    const template = document.querySelector("#book-card-template");
-    const cloneCard = document.importNode(template.content, true);
-    cloneCard.querySelector(".book-card").setAttribute("id", book.uuid);
-    cloneCard.querySelector(".book-title").textContent = book.title;
-    cloneCard.querySelector(".book-author").textContent = book.author;
-    cloneCard.querySelector(".book-category").textContent = book.category;
-    cloneCard.querySelector(".book-year").textContent = book.year;
-    cloneCard.querySelector(".book-pages").textContent = book.pages;
-    cloneCard.querySelector(".book-read").textContent = book.read ? "already read" : "not read yet";
-    cloneCard.querySelector(".book-rating").dataset.rate = book.rating;
-    return cloneCard;
-  }
-
-  function createBook(ev) {
-    ev.preventDefault();
-    try {
-      const newBookData = [...document.querySelectorAll("#book_form > input")]
-        .map( date => date.getAttribute("type") === "checkbox" ? date.checked : date.value);
-      const newBookRating = [...bookForm.querySelectorAll("div input")].reduce( (sum, star) => star.checked ? ++sum : sum, 0);
-      newBookData.push(newBookRating);
-      const newBook = new Book(...newBookData);
-      newBook.generateUuid();
-      newBook.setBookcard();
-      currentBookshelf().push(newBook);
+  function initLibrary() {
+    if(!getStoredLibrary()) {
+      const exampleBookshelf = new Bookshelf("example");
+      library.push(exampleBookshelf);
+      storeIndex(0);
+      exmpLibData.forEach( book => {
+        const newBook = createBook(book);
+        currentBookshelf().push(newBook);
+        newBook.createBookcard();
+      });
       storeLibrary();
-      bookForm.reset();
-      bookDialog.close();
-      displayBookcard(newBook);
+    } else {
+      library.push(...getStoredLibrary());
+      displayBookshelf();
+    }
+    library.forEach( shelf => addBookshelfOption(shelf.name, getBookshelfIndex(shelf.name) === Number(getStoredIndex()) ? true : false));
+  }
+
+  function createBook(data) {
+    try {
+      const newBook = new Book(...data);
+      newBook.generateUuid();
+      return newBook;
     } catch (error) {
       console.error(error);
     }
-  }
-
-  function changeBookshelf() {
-    container.querySelectorAll("div").forEach( div => div.remove());
-    storeIndex(getIndex(selectBookshelf.value));
-    initBookshelf();
   }
 
   function addBookshelfOption(name, selected="true") {
@@ -121,6 +133,88 @@ const library1a = ( () => {
     if(selected) newOption.setAttribute("selected", "");
     newOption.textContent  = name;
     selectBookshelf.appendChild(newOption);
+  }
+
+  function handleChangeEvent(ev) {
+    ev.preventDefault();
+    if (ev.target.id.endsWith("-read")) {
+      const readIndex = currentBookshelf().findIndex( book => ev.target.id.startsWith(book.uuid));
+      currentBookshelf()[readIndex].read = !currentBookshelf()[readIndex].read;
+      storeLibrary();
+    } else {
+      setBookRating(ev);
+    }
+  }
+
+  function removeBook(ev) {
+    const removeIndex = currentBookshelf().findIndex( book => book.uuid === ev.target.closest("button").dataset.uuid);
+    document.querySelector(`[data-uuid="${ev.target.closest('button').dataset.uuid}"]`).remove();
+    currentBookshelf().splice(removeIndex, 1);
+    storeLibrary();
+  }
+
+  function setBookRating(ev) {
+    const rateIndex = currentBookshelf().findIndex( book => ev.target.id.startsWith(book.uuid));
+    if (ev.target.checked) {
+      currentBookshelf()[rateIndex].rating = Number(ev.target.value);
+    } else {
+      currentBookshelf()[rateIndex].rating =
+        currentBookshelf()[rateIndex].rating > Number(ev.target.value) ?
+        Number(ev.target.value) : --currentBookshelf()[rateIndex].rating;
+    }
+    storeLibrary();
+    setCardStars(currentBookshelf()[rateIndex]);
+  }
+
+  function setCardStars(book) {
+    const currentCard = document.querySelector(`.book-card[data-uuid="${book.uuid}"]`);
+    const allStars = currentCard.querySelectorAll(`.book-rating input`);
+    allStars.forEach( star => {
+      if(star.value <= book.rating) {
+        star.checked = true;
+      } else {
+        star.checked = false;
+      }
+    });
+  }
+
+  function createNewBook(ev) {
+    ev.preventDefault();
+    const newBookData = [...bookFormData].map(
+      date => date.getAttribute("type") === "checkbox" ? date.checked : date.value);
+    const newBookRating = [...bookFormRating].reduce(
+      (sum, star) => star.checked ? ++sum : sum, 0);
+    newBookData.push(newBookRating);
+    const newBook = createBook(newBookData);
+    currentBookshelf().push(newBook);
+    newBook.createBookcard();
+    resetBookForm();
+    storeLibrary();
+  }
+
+  function resetBookForm() {
+    bookForm.reset();
+    bookDialog.close();
+  }
+
+  function setFormRating(ev) {
+    if (ev.target.checked) {
+      rating = Number(ev.target.value);
+    } else {
+      rating = rating > Number(ev.target.value) ?
+        Number(ev.target.value) : --rating;
+    }
+    setFormStars();
+  }
+
+  function setFormStars() {
+    bookFormStars.forEach( star => {
+      if(star.value <= rating) {
+        star.checked = true;
+      } else {
+        star.checked = false;
+      }
+      });
   }
 
   function createBookshelf(ev) {
@@ -133,68 +227,40 @@ const library1a = ( () => {
       storeIndex(library.length - 1);
       addBookshelfOption(inputBookshelfName.value);
       changeBookshelf();
-      bookshelfForm.reset();
-      bookshelfDialog.close();
+      resetBookshelfForm();
     } catch (error) {
       console.error(error);
     }
   }
 
-  function initBookshelf() {
+  function changeBookshelf() {
+    container.querySelectorAll("div").forEach( div => div.remove());
+    storeIndex(getBookshelfIndex(selectBookshelf.value));
+    displayBookshelf();
+  }
+
+  function resetBookshelfForm() {
+    bookshelfForm.reset();
+    bookshelfDialog.close();
+  }
+
+  function displayBookshelf() {
     currentBookshelf().forEach( book => {
-      const bookData = [];
-      for (const elem in book) {
-        bookData.push(book[elem]);
+      const bookArr = []
+      for( const key in book) {
+        bookArr.push(book[key]);
       }
-      const storedBook = new Book(...bookData);
-      storedBook.setBookcard();
-      displayBookcard(storedBook);
+      book = createBook(bookArr);
+      book.createBookcard();
     });
   }
 
-  function initLibrary() {
-    if(!getStoredLibrary()) {
-      const exampleBookshelf = new Bookshelf("example");
-      exmpLibData.forEach( bookData => {
-        const newBook = new Book(...bookData);
-        newBook.generateUuid();
-        exampleBookshelf[exampleBookshelf.name].push(newBook);
-        newBook.setBookcard();
-        displayBookcard(newBook);
-      });
-      library.push(exampleBookshelf);
-      storeLibrary();
-      storeIndex(0);
-    } else {
-      library.push(...getStoredLibrary());
-      initBookshelf();
-    }
-    library.forEach( shelf => addBookshelfOption(shelf.name, getIndex(shelf.name) === Number(getStoredIndex()) ? true : false));
-  }
+  bookForm.addEventListener("submit", createNewBook);
 
-  function setStarDisplay() {
-    stars.forEach( star => {
-      if(star.value <= rating) {
-        star.checked = true;
-      } else {
-        star.checked = false;
-      }
-      });
-  }
-
-  function setRating(ev) {
-    if (ev.target.checked) {
-      rating = Number(ev.target.value);
-    } else {
-      rating = rating > Number(ev.target.value) ?
-        Number(ev.target.value) : --rating;
-    }
-    setStarDisplay();
-  }
-
-  bookForm.addEventListener("submit", createBook);
   selectBookshelf.addEventListener("change", changeBookshelf);
+
   bookshelfForm.addEventListener("submit", createBookshelf);
+
   inputBookshelfName.addEventListener("input", () => {
     if(library.every( shelf => shelf.name !== inputBookshelfName.value)) {
       inputBookshelfName.setCustomValidity("");
@@ -202,11 +268,14 @@ const library1a = ( () => {
       inputBookshelfName.setCustomValidity("A bookshelf with this name already exists!");
     }
   });
-  stars.forEach( star => star.addEventListener("change", setRating));
+
+  bookFormStars.forEach( star => star.addEventListener("change", setFormRating));
+
   document.querySelector("#info_pop button").addEventListener("click", () => {
     localStorage.clear();
     while(library.length) library.pop();
   });
+
   document.querySelector(".scheme-toggle").addEventListener("click", () => {
     document.documentElement.style.setProperty("color-scheme",
       preferredScheme() === "light" ? "dark" : "light");
