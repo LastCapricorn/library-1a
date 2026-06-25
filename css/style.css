@@ -137,14 +137,17 @@ button {
   left: 3px;
 }
 
-button:has([class*="info"]) {
+.tools button:has([class*="info"]) {
   anchor-name: --info;
 }
-button:has([class*="books"]) {
+.tools button:has([class*="books"]) {
   anchor-name: --bookshelf;
 }
-button:has([class*="book-open"]) {
+.tools button:has([class*="book-open"]) {
   anchor-name: --book;
+}
+.tools button:has([class*="trash"]) {
+  anchor-name: --remove;
 }
 dialog button:has([class^="ph--x"]) {
     position: relative;
@@ -177,7 +180,7 @@ dialog button[type="submit"] {
   max-width: 100%;
   width: min(93dvw, 400px);
   margin-block-start: 0.5rem;
-  margin-inline-start: 0.5rem;
+  margin-inline-end: 0.70rem;
   padding: 0.5rem;
   background-color: color(from var(--bg-body) srgb r g b / 0.9);
   color: var(--ch-li);
@@ -298,6 +301,44 @@ dialog button[type="submit"] {
   }
   button[type="submit"] {
     grid-area: submit;
+  }
+}
+
+#remove_dialog:open {
+  position: fixed;
+  position-anchor: --remove;
+  position-area: bottom;
+  max-width: 100%;
+  width: min(93dvw, 400px);
+  margin-block-start: 0.5rem;
+  margin-inline-start: 0.7rem;
+  background-color: color(from var(--bg-body) srgb r g b / 0.9);
+  color: var(--ch-li);
+  border: 1px solid var(--ch-li);
+  outline: 2px dashed var(--ch-li);
+  outline-offset: -5px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 0.5rem;
+  p {
+    grid-column: 1 / 4;
+  }
+  button {
+    grid-row: 2 / 3;
+    justify-self: end;
+    border: 1px solid var(--ch-li);
+    outline: 2px dotted var(--ch-li);
+    outline-offset: -4px;
+    color: var(--ch-li);
+    background-color: var(--bg-header);
+    width: min-content;
+    padding: 0.3rem;
+  }
+  button[class="confirm-removal"] {
+    grid-column: 2 / 3;
+  }
+  button:not([class="confirm-removal"]) {
+    grid-column: 3 / 4;
   }
 }
 

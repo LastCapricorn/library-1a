@@ -83,6 +83,7 @@ const library1a = ( () => {
   const bookshelfDialog = document.querySelector("#bookshelf_dialog");
   const bookshelfForm = document.querySelector("#bookshelf_form");
   const inputBookshelfName = document.querySelector("#bookshelf_name");
+  const buttonRemoveBookshelf = document.querySelector(".remove-bookshelf");
 
   const bookDialog = document.querySelector("#book_dialog");
   const bookForm = document.querySelector("#book_form");
@@ -100,7 +101,7 @@ const library1a = ( () => {
   const currentBookshelf = () => library[getStoredIndex()][library[getStoredIndex()].name];
 
   function initLibrary() {
-    if(!getStoredLibrary()) {
+    if(!getStoredLibrary().length) {
       const exampleBookshelf = new Bookshelf("example");
       library.push(exampleBookshelf);
       storeIndex(0);
@@ -228,6 +229,7 @@ const library1a = ( () => {
       addBookshelfOption(inputBookshelfName.value);
       changeBookshelf();
       resetBookshelfForm();
+      buttonRemoveBookshelf.removeAttribute("disabled");
     } catch (error) {
       console.error(error);
     }
@@ -254,6 +256,24 @@ const library1a = ( () => {
       book.createBookcard();
     });
   }
+
+  function removeBookshelf() {
+    selectBookshelf.querySelector(`[value=${library[getStoredIndex()].name}]`).remove();
+    library.splice(getStoredIndex(), 1);
+    storeIndex(0);
+    storeLibrary();
+    if (library.length > 0) {
+      selectBookshelf.querySelector(`[value=${library[getStoredIndex()].name}]`).selected = true;
+      changeBookshelf();
+    } else {
+      container.querySelectorAll("div").forEach( div => div.remove());
+      buttonRemoveBookshelf.setAttribute("disabled", "");
+    }
+    document.querySelector("#remove_dialog").close();
+  }
+
+  buttonRemoveBookshelf.addEventListener("click", () => document.querySelector("#remove_dialog").show());
+  document.querySelector(".confirm-removal").addEventListener("click", removeBookshelf);
 
   bookForm.addEventListener("submit", createNewBook);
 
