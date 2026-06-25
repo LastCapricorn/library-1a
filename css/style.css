@@ -102,6 +102,8 @@ button {
   color: var(--ch-li);
 }
 .toolbar {
+  width: clamp(300px, 100dvw, 1200px);
+  margin: 0 auto;
   padding: 2px;
   background-color: var(--bg-toolbar);
   display: flex;
@@ -121,7 +123,7 @@ button {
   border: none;
 }
 .tools select {
-  width: min(30dvw, 200px);
+  width: clamp(90px, 32dvw, 300px);
   background-color: var(--bg-li);
   border: none;
   outline: none;
@@ -380,7 +382,7 @@ dialog button[type="submit"] {
   scroll-snap-type: inline mandatory;
 }
 .book-card {
-  width: min(96dvw, 400px);
+  width: clamp(280px, 96dvw, 320px);
   height: 400px;
   background-color: var(--bg-card);
   border: 1px solid var(--bg-toolbar);
@@ -405,6 +407,8 @@ dialog button[type="submit"] {
   align-items: center;
   .book-title {
     grid-area: title;
+    text-wrap-style: balance;
+    text-align: center;
   }
   .book-author {
     grid-area: author;
@@ -500,6 +504,7 @@ dialog button[type="submit"] {
 }
 
 footer {
+  width: max(300px, 100dvw);
   align-self: end;
   background-color: var(--bg-header);
 }

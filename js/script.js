@@ -101,7 +101,7 @@ const library1a = ( () => {
   const currentBookshelf = () => library[getStoredIndex()][library[getStoredIndex()].name];
 
   function initLibrary() {
-    if(!getStoredLibrary().length) {
+    if(!getStoredLibrary()) {
       const exampleBookshelf = new Bookshelf("example");
       library.push(exampleBookshelf);
       storeIndex(0);
@@ -267,9 +267,20 @@ const library1a = ( () => {
       changeBookshelf();
     } else {
       container.querySelectorAll("div").forEach( div => div.remove());
+      localStorage.clear();
       buttonRemoveBookshelf.setAttribute("disabled", "");
     }
     document.querySelector("#remove_dialog").close();
+  }
+
+  function sortByTitle(ev) {
+    if (ev.target.closest("button").classList.contains("asc")) {
+      currentBookshelf().sort( (a, b) => a.title > b.title ? -1 : 1);
+    } else {
+      currentBookshelf().sort( (a, b) => a.title > b.title ? 1 : -1);
+    }
+    storeLibrary();
+    changeBookshelf();
   }
 
   buttonRemoveBookshelf.addEventListener("click", () => document.querySelector("#remove_dialog").show());
@@ -301,10 +312,12 @@ const library1a = ( () => {
       preferredScheme() === "light" ? "dark" : "light");
     localStorage.setItem("lib1a_selected-theme", preferredScheme() );
   });
+
+  document.querySelectorAll(".sort-button").forEach( button => button.addEventListener("click", sortByTitle));
+
   document.documentElement.style.setProperty("color-scheme",
     `${ localStorage.getItem("lib1a_selected-theme") || preferredScheme() }`
   );
-
   initLibrary();
 
 })();
