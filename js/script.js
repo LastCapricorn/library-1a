@@ -175,8 +175,7 @@ const library1a = ( () => {
   function handleChangeEvent(ev) {
     ev.preventDefault();
     if (ev.target.id.endsWith("-read") || ev.target.id.endsWith("-tab-read")) {
-      const readIndex = currentBookshelf().findIndex( book => ev.target.id.startsWith(book.uuid));
-      currentBookshelf()[readIndex].read = !currentBookshelf()[readIndex].read;
+      setReadText(ev);
       storeLibrary();
     } else {
       setBookRating(ev);
@@ -188,6 +187,15 @@ const library1a = ( () => {
     document.querySelector(`[data-uuid="${ev.target.closest('button').dataset.uuid}"]`).remove();
     currentBookshelf().splice(removeIndex, 1);
     storeLibrary();
+  }
+
+  function setReadText(ev) {
+    const readIndex = currentBookshelf().findIndex( book => ev.target.id.startsWith(book.uuid));
+    currentBookshelf()[readIndex].read = !currentBookshelf()[readIndex].read;
+    if (ev.currentTarget.querySelector(".label-read")) {
+      ev.currentTarget.querySelector(".label-read").textContent =
+        currentBookshelf()[readIndex].read ? "already read" : "not read yet";
+    }
   }
 
   function setBookRating(ev) {
@@ -332,13 +340,13 @@ const library1a = ( () => {
   }
 
   const containerWidth = () => document.querySelector("main").offsetWidth;
-  const checkSize = () => containerWidth() < 700 ? changeView() : "";
+  const checkSize = () => containerWidth() < 685 ? changeView() : "";
   function changeView() {
     if (!container.classList.contains("table") && !isListenerActive) {
       window.addEventListener("resize", checkSize);
       isListenerActive = true;
     }
-    if (containerWidth() < 700) {
+    if (containerWidth() < 685) {
       window.removeEventListener("resize", checkSize);
       isListenerActive = false;
     }

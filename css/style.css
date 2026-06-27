@@ -17,6 +17,7 @@
    --bg-cancel: light-dark( hsl(0 90% 80% / 1), hsl(0 60% 50% / 0.9));
    --color: light-dark( hsl(180 90% 10% / 1), hsl(180 65% 89% / 1));
    --goldstar: light-dark(hsl(50 100% 50%), hsl(46 100% 50%));
+   --black-n-white: light-dark(black, white);
 }
 :root[style*="light"] {
   [class*="sun"] {
@@ -209,6 +210,7 @@ button:not(:has(span)) {
 .star,
 [class="rate-label"] {
   font-size: 1.25rem;
+  filter: drop-shadow(1px 1px 2px hsl(from var(--black-n-white) h s l / 0.75));
 }
 input[id^="star"],
 [class="rate-input"] {
@@ -224,7 +226,7 @@ input[id^="star"],
 }
 
 .container {
-  width: clamp(300px, 100dvw, 1200px);
+  width: clamp(300px, calc(100dvw - 15px), 1200px);
   margin: 0 auto;
   padding-inline: 1rem;
   display: grid;
@@ -319,11 +321,10 @@ table {
 }
 .container.table {
   display: block;
-
+  padding-inline: 0;
   table {
-    display: block;
+    display: table;
     border-collapse: collapse;
-    width: min(100dvw, 1200px);
   }
   thead{
     background-color: var(--bg-medium);
@@ -491,7 +492,6 @@ button:has([class^="ph--x"]) {
 @media (width > 449px) {
   body {
     display: block;
-    overflow-x: hidden;
   }
   header {
     position: fixed;
@@ -503,15 +503,13 @@ button:has([class^="ph--x"]) {
     inset: auto 0 0 0;
   }
   .tools:last-of-type {
-    margin-right: 0.75rem;
+    padding-right: 0.75rem;
   }
   .container {
     margin-block-start: 8rem;
     padding-block-end: 4rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     grid-auto-flow: row;
-    justify-items: center;
-    align-items: start;
     scroll-snap-type: none;
     gap: 2rem 1.0rem;
   }
@@ -527,6 +525,6 @@ button:has([class^="ph--x"]) {
 }
 @media (width > 1199px) {
   .tools:last-of-type {
-    margin-right: 0;
+    padding-right: 0;
   }
 }
