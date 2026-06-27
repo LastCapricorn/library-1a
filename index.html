@@ -31,11 +31,15 @@
         <button type="button" title="new book" command="show-modal" commandfor="book_dialog">
           <span class="ph--book-open-duotone"></span>
         </button>
-        <button type="button" class="sort-button asc">
+        <button type="button" class="sort-button asc" title="sort ascending">
           <span class="ph--sort-ascending-duotone"></span>
         </button>
-        <button type="button" class="sort-button desc">
+        <button type="button" class="sort-button desc" title="sort descending">
           <span class="ph--sort-descending-duotone"></span>
+        </button>
+        <button type="button" class="toggle-view">
+          <span class="ph--table-duotone" title="table view"></span>
+          <span class="ph--cards-duotone" title="card view"></span>
         </button>
       </div>
       <div class="tools">
@@ -49,6 +53,31 @@
       </div>
     </nav>
   </header>
+
+  <main class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Category</th>
+          <th>Published</th>
+          <th>Pages</th>
+          <th>Read</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+
+      <tbody></tbody>
+
+    </table>
+  </main>
+
+  <footer>
+    <div>
+      <p>&copy; 2026 LastCapricorn</p>
+    </div>
+  </footer>
 
   <dialog id="book_dialog">
     <form action="#" method="dialog" name="book_form" id="book_form">
@@ -135,21 +164,13 @@
     </ul>
   </div>
 
-  <main class="container"></main>
-
-  <footer>
-    <div>
-      <span>&copy; 2026 LastCapricorn</span>
-    </div>
-  </footer>
-
   <template id="book-card-template">
     <div class="book-card">
       <h3 class="book-title"></h3>
       <p class="book-author"></p>
       <span class="span-category">Category:</span>
       <p class="book-category"></p>
-      <span class="span-year">First Published:</span>
+      <span class="span-year">Published:</span>
       <p class="book-year"></p>
       <span class="span-pages">Pages:</span>
       <p class="book-pages"></p>
@@ -181,6 +202,48 @@
         <span class="ph--trash-duotone"></span>
       </button>
     </div>
+  </template>
+
+  <template id="book-tablerow-template">
+    <tr class="tab-row">
+      <td class="tab-title"></td>
+      <td class="tab-author"></td>
+      <td class="tab-category"></td>
+      <td class="tab-year"></td>
+      <td class="tab-pages"></td>
+      <td class="tab-read">
+        <input type="checkbox" class="book-read">
+      </td>
+      <td class="tab-rating">
+        <div class="book-rating">
+          <label class="rate-label">
+            <span class="ph--star-duotone"></span>
+            <input type="checkbox" class="rate-input" value="1">
+          </label>
+          <label class="rate-label">
+            <span class="ph--star-duotone"></span>
+            <input type="checkbox" class="rate-input" value="2">
+          </label>
+          <label class="rate-label">
+            <span class="ph--star-duotone"></span>
+            <input type="checkbox" class="rate-input" value="3">
+          </label>
+          <label class="rate-label">
+            <span class="ph--star-duotone"></span>
+            <input type="checkbox" class="rate-input" value="4">
+          </label>
+          <label class="rate-label">
+            <span class="ph--star-duotone"></span>
+            <input type="checkbox" class="rate-input" value="5">
+          </label>
+        </div>
+      </td>
+      <td class="tab-trash">
+        <button type="button" class="button-trash">
+          <span class="ph--trash-duotone"></span>
+        </button>
+      </td>
+    </tr>
   </template>
 
 </body>

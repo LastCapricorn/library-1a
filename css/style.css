@@ -9,32 +9,14 @@
 
 :root {
   color-scheme: light dark;
-   /* --stroke: hsl(180 85% 75% / 1); */
    --bg-body: light-dark( hsl(180 90% 92% / 1),  hsl(180 25% 6% / 1));
-   --bg-header: light-dark( hsl(180 35% 70% / 1), hsl(180 25% 10% / 1));
-   --bg-card: light-dark(hsl(180 35% 70% / 1), hsl(180 25% 20% / 1));
-   --bg-toolbar: light-dark( hsl(180 30% 60% / 1), hsl(180 0% 20% / 1));
-   --bg-li: light-dark( hsl(180 40% 88% / 1), hsl(180 0% 38% / 1));
-   --br-li: light-dark( hsl(180 30% 60% / 1), hsl(180 0% 20% / 1));
-   --ch-li: light-dark( hsl(180 90% 10% / 1), hsl(180 65% 89% / 1));
+   --bg-bloody: light-dark(hsl(180 35% 70% / 1), hsl(180 25% 20% / 1));
+   --bg-medium: light-dark( hsl(180 35% 70% / 1), hsl(180 25% 10% / 1));
+   --bg-well-done: light-dark( hsl(180 25% 55% / 1), hsl(180 0% 20% / 1));
+   --bg-tools: light-dark( hsl(180 40% 88% / 1), hsl(180 0% 38% / 1));
    --bg-cancel: light-dark( hsl(0 90% 80% / 1), hsl(0 60% 50% / 0.9));
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-  }
-  .scheme-toggle [class*="moon"] {
-    display: none;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  .root {
-    color-scheme: dark;
-  }
-  .scheme-toggle [class*="sun"] {
-    display: none;
-  }
+   --color: light-dark( hsl(180 90% 10% / 1), hsl(180 65% 89% / 1));
+   --goldstar: light-dark(hsl(50 100% 50%), hsl(46 100% 50%));
 }
 :root[style*="light"] {
   [class*="sun"] {
@@ -52,91 +34,85 @@
     display: inline-block;
   }
 }
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+  }
+  .scheme-toggle [class*="moon"] {
+    display: none;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .root {
+    color-scheme: dark;
+  }
+  .scheme-toggle [class*="sun"] {
+    display: none;
+  }
+}
 
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
 }
 html {
-  height: 100svh;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  height: 100svh;
 }
 body {
-  min-height: 100%;
   font-family: "Special Elite", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
   background-color: var(--bg-body);
+  color: var(--color);
+  line-height: 1.5;
+  min-height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  align-content: space-between;
 }
-img {
-  display: block;
-  max-width: 100%;
-}
-input, select, button {
+input, select, button, dialog, :popover-open {
   font: inherit;
-}
-button {
-  cursor: pointer;
+  color: var(--color);
 }
 
+header {
+  background-color: var(--bg-well-done);
+  border-block-end: 1px solid var(--color);
+}
 .heading {
+  background-color: var(--bg-medium);
+  outline: 4px dashed var(--color);
+  outline-offset: -7px;
   display:flex;
   gap: 1.0rem;
-  background-color: var(--bg-header);
-  outline: 4px dashed var(--ch-li);
-  outline-offset: -8px;
+  padding: 0.5rem;
 }
-.heading .logo {
-  margin-inline-start: 0.5rem;
+.logo {
+  font-size: 3rem;
   display: flex;
   align-items: center;
-  font-size: 3rem;
-  color: var(--ch-li);
 }
-.heading .title h1 {
-  padding-top: 1rem;
-  color: var(--ch-li);
+h1 {
+  padding-block-start: 0.5rem;
 }
+
 .toolbar {
   width: clamp(300px, 100dvw, 1200px);
   margin: 0 auto;
-  padding: 2px;
-  background-color: var(--bg-toolbar);
+  padding: 1px;
   display: flex;
+  gap: 1px;
   justify-content: space-between;
 }
 .tools {
-  padding: 0;
   display: flex;
   gap: 1px;
 }
-.tools button {
-  font-size: 18px;
-  line-height: 0;
-  padding: 3px;
-  background-color: var(--bg-li);
-  color: var(--ch-li);
-  border: none;
-}
 .tools select {
-  width: clamp(90px, 32dvw, 300px);
-  background-color: var(--bg-li);
+  width: min(29dvw, 240px);
+  background-color: var(--bg-tools);
   border: none;
   outline: none;
-}
-
-.scheme-toggle {
-  position: relative;
-  width: 24px;
-}
-.scheme-toggle span {
-  position: absolute;
-  top: 3px;
-  left: 3px;
 }
 
 .tools button:has([class*="info"]) {
@@ -151,246 +127,124 @@ button {
 .tools button:has([class*="trash"]) {
   anchor-name: --remove;
 }
-dialog button:has([class^="ph--x"]) {
-    position: relative;
-    justify-self: end;
-    align-self: start;
-    width: 24px;
-    height: 24px;
-    border: none;
-    background-color: var(--bg-cancel);
-    display: grid;
-    justify-items: center;
-    align-items: center;
+label:has([type="checkbox"]),
+label + [type="checkbox"],
+button {
+  cursor: pointer;
 }
-dialog button[type="submit"] {
-    border: 1px solid var(--ch-li);
-    outline: 2px dotted var(--ch-li);
-    outline-offset: -4px;
-    color: var(--ch-li);
-    background-color: var(--bg-header);
-    width: min-content;
-    padding: 0.3rem;
-    justify-self: end;
-    align-self: center;
+button:has(span) {
+  font-size: 18px;
+  line-height: 0;
+  padding: 3px;
+  background-color: var(--bg-tools);
+  border: none;
+}
+button:not(:has(span)) {
+  padding-block-start: 0.3rem;
+  padding-inline: 0.4rem;
+  background-color: var(--bg-medium);
+  border: 1px solid var(--color);
+  outline: 2px dotted var(--color);
+  outline-offset: -4px;
+}
+.button-trash {
+  background-color: var(--bg-medium);
+  border: 1px groove var(--color);
+  border-bottom-right-radius: 8px;
+  corner-bottom-right-shape: bevel;
 }
 
-#book_dialog {
-  position: fixed;
-  position-anchor: --book;
-  position-area: bottom;
-  max-width: 100%;
-  width: min(93dvw, 400px);
-  margin-block-start: 0.5rem;
-  margin-inline-end: 0.70rem;
-  padding: 0.5rem;
-  background-color: color(from var(--bg-body) srgb r g b / 0.9);
-  color: var(--ch-li);
-  border: 1px solid var(--ch-li);
-  outline: 2px dashed var(--ch-li);
-  outline-offset: -5px;
-  form {
-    display: grid;
-    grid-template-columns: 90px minmax(100px, 1fr);
-    grid-template-rows: 30px 70px;
-    grid-auto-rows: 40px;
-    grid-auto-flow: row;
-    align-items: center;
-  }
-  button {
-    grid-column: 2;
-  }
-  [class^="ph--x"] {
-    position: absolute;
-    font-size: 2rem;
-    color: var(--ch-li);
-  }
-  .form-head {
-    grid-column: span 2;
-    padding-inline: 0.2rem;
-  }
-  [for^="book"],
-  .rating {
-    justify-self: end;
-    padding-inline-end: 0.5rem;
-  }
-  input {
-    color: var(--ch-li);
-  }
-  [id="book_read"] {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-    width: 1.4rem;
-    aspect-ratio: 1 / 1;
-    border: 2px dotted var(--ch-li);
-  }
-  [id="book_read"]::before {
-    content: "\2714";
-    position: absolute;
-    top: -0.9rem;
-    left: -0.2rem;
-    font-size: 2.5rem;
-    color: currentColor;
-    visibility: hidden;
-  }
-  [id="book_read"]:checked::before {
+.toggle-view {
+  display: none;
+  position: relative;
+  width: 24px;
+  [class^="ph--table"] {
     visibility: visible;
   }
-  #rating {
-    display: grid;
-    grid-auto-flow: column;
-    justify-content: start;
-    align-content: center;
-  }
-  .star {
-    font-size: 1.25rem;
-    cursor: pointer;
-  }
-  input[id^="star"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-  label:has(input:checked) {
-    color: gold;
+  [class^="ph--cards"] {
+    visibility: hidden;
   }
 }
-
-#bookshelf_dialog {
-  position: fixed;
-  position-anchor: --bookshelf;
-  position-area: bottom span-right;
-  max-width: 100%;
-  width: min(93dvw, 400px);
-  margin-block-start: 0.5rem;
-  margin-inline-start: 0.5rem;
-  background-color: color(from var(--bg-body) srgb r g b / 0.9);
-  color: var(--ch-li);
-  border: 1px solid var(--ch-li);
-  outline: 2px dashed var(--ch-li);
-  outline-offset: -5px;
-  form {
-    display: grid;
-    grid-template-areas:
-    ". exit"
-    "label label"
-    "input input"
-    "explain submit";
+.toggle-view.table {
+  [class^="ph--table"] {
+    visibility: hidden;
   }
-  button:has([class^="ph--x"]) {
-    grid-area: exit;
-  }
-  button span {
-    position: absolute;
-    font-size: 2rem;
-    color: var(--ch-li);
-  }
-  label {
-    margin-top: 1rem;
-    grid-area: label;
-  }
-  input {
-    grid-area: input;
-    color: var(--ch-li);
-    margin-bottom: 1rem;
-  }
-  .explanation {
-    grid-area: explain;
-    font-size: 0.80rem;
-  }
-  button[type="submit"] {
-    grid-area: submit;
+  [class^="ph--cards"] {
+    visibility: visible;
   }
 }
+.toggle-view span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
 
-#remove_dialog:open {
-  position: fixed;
-  position-anchor: --remove;
-  position-area: bottom;
-  max-width: 100%;
-  width: min(93dvw, 400px);
-  margin-block-start: 0.5rem;
-  margin-inline-start: 0.7rem;
-  background-color: color(from var(--bg-body) srgb r g b / 0.9);
-  color: var(--ch-li);
-  border: 1px solid var(--ch-li);
-  outline: 2px dashed var(--ch-li);
-  outline-offset: -5px;
+#book_read,
+.book-read {
+  appearance: none;
+  position: relative;
+  width: 1.4rem;
+  aspect-ratio: 1 / 1;
+  border: 2px dotted var(--color);
+}
+#book_read::before,
+.book-read::before {
+  content: "\2714";
+  position: absolute;
+  top: -15px;
+  left: -4px;
+  font-size: 2.5rem;
+  color: var(--color);
+  visibility: hidden;
+}
+#book_read:checked::before,
+.book-read:checked::before {
+  visibility: visible;
+}
+#rating,
+.book-rating {
   display: grid;
-  grid-template-columns: auto auto auto;
-  gap: 0.5rem;
-  p {
-    grid-column: 1 / 4;
-  }
-  button {
-    grid-row: 2 / 3;
-    justify-self: end;
-    border: 1px solid var(--ch-li);
-    outline: 2px dotted var(--ch-li);
-    outline-offset: -4px;
-    color: var(--ch-li);
-    background-color: var(--bg-header);
-    width: min-content;
-    padding: 0.3rem;
-  }
-  button[class="confirm-removal"] {
-    grid-column: 2 / 3;
-  }
-  button:not([class="confirm-removal"]) {
-    grid-column: 3 / 4;
-  }
+  grid-auto-flow: column;
 }
-
-#info_pop:popover-open {
-  position: fixed;
-  position-anchor: --info;
-  position-area: bottom span-left;
-  width: min(85dvw, 400px);
-  margin-block-start: 0.5rem;
-  margin-inline-end: 0.5rem;
-  background-color: color(from var(--bg-body) srgb r g b / 0.9);
-  color: var(--ch-li);
-  border: 1px solid var(--ch-li);
-  outline: 2px dashed var(--ch-li);
-  outline-offset: -5px;
-  ul {
-    padding-inline-start: 24px;
-    li {
-      padding: 0.5rem 0.2rem 0.5rem 0.5rem;
-      text-wrap-style: pretty;
-    }
-    li:not(:last-of-type) {
-      border-block-end: 1px groove var(--bg-card);
-    }
-  }
+.star,
+[class="rate-label"] {
+  font-size: 1.25rem;
+}
+input[id^="star"],
+[class="rate-input"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.star:has(input:checked),
+[class="rate-label"]:has(input:checked) {
+  color: var(--goldstar);
 }
 
 .container {
-  width: min(100dvw, 1200px);
-  margin: 3rem auto;
-  padding-inline: 2rem;
+  width: clamp(300px, 100dvw, 1200px);
+  margin: 0 auto;
+  padding-inline: 1rem;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: 3rem;
-  justify-items: center;
-  align-items: center;
+  gap: 2rem;
+  align-content: center;
   overflow-x: auto;
   scroll-snap-type: inline mandatory;
 }
+
 .book-card {
-  width: clamp(280px, 96dvw, 320px);
+  width: clamp(280px, 96dvw, 400px);
   height: 400px;
-  background-color: var(--bg-card);
-  border: 1px solid var(--bg-toolbar);
-  outline: 4px dotted var(--ch-li);
+  background-color: var(--bg-bloody);
+  border: 1px solid var(--bg-well-done);
+  outline: 4px dotted var(--color);
   outline-offset: -6px;
   border-radius: 16px;
   corner-shape: bevel;
-  box-shadow: 10px 10px 10px 0px color(from var(--bg-toolbar) srgb r g b / 0.25);
+  box-shadow: 10px 10px 10px 0px hsl(from var(--bg-well-done) h s l / 0.25);
   scroll-snap-align: none center;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -403,12 +257,18 @@ dialog button[type="submit"] {
     "read read"
     "rating rating"
     ". trash";
-  justify-items: center;
   align-items: center;
+
   .book-title {
     grid-area: title;
     text-wrap-style: balance;
     text-align: center;
+  }
+  p {
+    text-align: center;
+  }
+  span {
+    text-align: right;
   }
   .book-author {
     grid-area: author;
@@ -434,77 +294,239 @@ dialog button[type="submit"] {
   .label-read,
   .book-read {
     grid-area: read;
+    justify-self: center;
   }
   .book-read {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-    justify-self: end;
-    margin-right: 3rem;
-    width: 1.4rem;
-    aspect-ratio: 1 / 1;
-    border: 2px dotted var(--ch-li);
-  }
-  .book-read::before {
-    content: "\2714";
-    position: absolute;
-    top: -0.9rem;
-    left: -0.2rem;
-    font-size: 2.5rem;
-    color: currentColor;
-    visibility: hidden;
-  }
-  .book-read:checked::before {
-    visibility: visible;
+    margin-inline-start: 160px;
   }
   .book-rating {
     grid-area: rating;
-    display: grid;
-    grid-auto-flow: column;
-    justify-content: start;
-    align-content: center;
-  }
-  [class="rate-label"] {
-    font-size: 1.25rem;
-    cursor: pointer;
-  }
-  [class="rate-input"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-  [class="rate-label"]:has(input:checked) {
-    color: gold;
+    justify-self: center;
   }
   .button-trash {
     grid-area: trash;
     justify-self: end;
-    width: 28px;
-    aspect-ratio: 1 / 1;
-    margin-inline-end: 1rem;
-    margin-block-end: 0.2rem;
-    background-color: var(--bg-header);
-    border: 1px groove var(--ch-li);
-    border-bottom-right-radius: 8px;
-    corner-bottom-right-shape: bevel;
-    display: grid;
-    justify-content: center;
-    align-items: center;
+    margin-inline-end: 16px;
+    margin-block-end: 4px;
   }
   [class^="span-"] {
-    justify-self: right;
     align-self: start;
-    color: var(--ch-li)
   }
-  [class^="ph--"] {
-    cursor: pointer;
+}
+
+table {
+  display: none;
+}
+.container.table {
+  display: block;
+
+  table {
+    display: block;
+    border-collapse: collapse;
+    width: min(100dvw, 1200px);
+  }
+  thead{
+    background-color: var(--bg-medium);
+  }
+  th,
+  td {
+    border: 2px dotted var(--color);
+    padding: 0.5rem;
+  }
+  td:nth-of-type(4),
+  td:nth-of-type(5) {
+    text-align: right;
+  }
+  td:nth-of-type(6) {
+    text-align: center;
+  }
+  .book-rating {
+    justify-self: center;
+    align-self: center;
+  }
+  .button-trash {
+    background-color: var(--bg-body);
   }
 }
 
 footer {
-  width: max(300px, 100dvw);
-  align-self: end;
-  background-color: var(--bg-header);
+  padding: 0.2rem;
+  border-block-start: 1px solid var(--color);
+  background-color: var(--bg-medium);
+}
+
+#book_dialog,
+#bookshelf_dialog,
+#remove_dialog,
+#info_pop {
+  position: fixed;
+  width: min(93dvw, 400px);
+  margin-block-start: 0.5rem;
+  padding: 0.5rem;
+  background-color: color(from var(--bg-body) srgb r g b / 0.95);
+  border: 1px solid var(--color);
+  outline: 2px dashed var(--color);
+  outline-offset: -5px;
+}
+[type="submit"] {
+    justify-self: end;
+    align-self: center;
+}
+button:has([class^="ph--x"]) {
+  position: relative;
+  justify-self: end;
+  align-self: start;
+  width: 24px;
+  height: 24px;
+  background-color: var(--bg-cancel);
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  span {
+    position: absolute;
+    font-size: 2rem;
+    color: var(--color);
+  }
+}
+
+#book_dialog {
+  position-anchor: --book;
+  position-area: bottom;
+
+  form {
+    display: grid;
+    grid-template-columns: 90px minmax(100px, 1fr);
+    grid-auto-flow: row;
+    gap: 1rem 0;
+    align-items: center;
+  }
+  button {
+    grid-column: 2;
+  }
+  .form-head {
+    grid-column: span 2;
+  }
+  [for^="book"],
+  .rating {
+    justify-self: end;
+    padding-inline-end: 0.5rem;
+  }
+  #rating {
+    justify-content: start;
+    line-height: 1;
+  }
+}
+
+#bookshelf_dialog {
+  position-anchor: --bookshelf;
+  position-area: bottom span-right;
+  margin-inline-start: 0.5rem;
+
+  form {
+    display: grid;
+    grid-template-areas:
+    ". exit"
+    "label label"
+    "input input"
+    "explain submit";
+  }
+  button:has([class^="ph--x"]) {
+    grid-area: exit;
+  }
+  label {
+    grid-area: label;
+    margin-top: 1rem;
+  }
+  input {
+    grid-area: input;
+    color: var(--color);
+    margin-bottom: 1rem;
+  }
+  .explanation {
+    grid-area: explain;
+    font-size: 0.80rem;
+  }
+  button[type="submit"] {
+    grid-area: submit;
+  }
+}
+
+#remove_dialog:open {
+  position-anchor: --remove;
+  position-area: bottom;
+  margin-inline-start: 0.7rem;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 0.5rem;
+  p {
+    grid-column: 1 / 4;
+  }
+  button {
+    justify-self: end;
+  }
+  button[class="confirm-removal"] {
+    grid-column: 2 / 3;
+  }
+  button:not([class="confirm-removal"]) {
+    grid-column: 3 / 4;
+  }
+}
+
+#info_pop:popover-open {
+  position-anchor: --info;
+  position-area: bottom span-left;
+  margin-inline-end: 0.5rem;
+  ul {
+    padding-inline-start: 20px;
+  }
+  li {
+    padding: 0.5rem 0;
+    text-wrap-style: pretty;
+  }
+  li:not(:last-of-type) {
+    border-block-end: 1px groove var(--bg-bloody);
+  }
+}
+
+@media (width > 449px) {
+  body {
+    display: block;
+    overflow-x: hidden;
+  }
+  header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 1;
+  }
+  footer {
+    position: fixed;
+    inset: auto 0 0 0;
+  }
+  .tools:last-of-type {
+    margin-right: 0.75rem;
+  }
+  .container {
+    margin-block-start: 8rem;
+    padding-block-end: 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-flow: row;
+    justify-items: center;
+    align-items: start;
+    scroll-snap-type: none;
+    gap: 2rem 1.0rem;
+  }
+  .book-card {
+    width: min(100%, 400px);
+    scroll-snap-align: none none;
+  }
+}
+@media (width > 699px) {
+  .toggle-view {
+    display: inline-block;
+  }
+}
+@media (width > 1199px) {
+  .tools:last-of-type {
+    margin-right: 0;
+  }
 }

@@ -77,13 +77,47 @@ const library1a = ( () => {
 
     container.prepend(card);
   }
+  Book.prototype.createBookTableRow = function() {
+    const template = document.querySelector("#book-tablerow-template");
+    const row = document.importNode(template.content, true);
+
+    row.querySelector(".tab-row").dataset.uuid = this.uuid;
+    row.querySelector(".tab-row").addEventListener("change", handleChangeEvent);
+
+    row.querySelector(".tab-title").textContent = this.title;
+    row.querySelector(".tab-author").textContent = this.author;
+    row.querySelector(".tab-category").textContent = this.category;
+    row.querySelector(".tab-year").textContent = this.year;
+    row.querySelector(".tab-pages").textContent = this.pages;
+
+    row.querySelector(".book-read").setAttribute("id", `${this.uuid}-tab-read`);
+    if (this.read) row.querySelector(".book-read").setAttribute("checked", "");
+
+    let count = 1;
+    row.querySelectorAll(".tab-rating .book-rating label").forEach( rateLabel => {
+      rateLabel.setAttribute("for", `${this.uuid}-tab-${count++}`);
+    });
+
+    count = 1;
+    row.querySelectorAll(".tab-rating .book-rating input").forEach ( rateInput => {
+      if (this.rating >= count) rateInput.setAttribute("checked", "");
+      rateInput.setAttribute("id", `${this.uuid}-tab-${count++}`);
+    });
+
+    row.querySelector(".button-trash").dataset.uuid = this.uuid;
+    row.querySelector(".button-trash").addEventListener("click", removeBook);
+
+    tableBody.prepend(row);
+  }
 
   const container = document.querySelector(".container");
+  const tableBody = document.querySelector("tbody");
   const selectBookshelf = document.querySelector("#shelf-select");
   const bookshelfDialog = document.querySelector("#bookshelf_dialog");
   const bookshelfForm = document.querySelector("#bookshelf_form");
   const inputBookshelfName = document.querySelector("#bookshelf_name");
   const buttonRemoveBookshelf = document.querySelector(".remove-bookshelf");
+  const buttonToggleView = document.querySelector(".toggle-view");
 
   const bookDialog = document.querySelector("#book_dialog");
   const bookForm = document.querySelector("#book_form");
@@ -91,6 +125,7 @@ const library1a = ( () => {
   const bookFormRating = bookForm.querySelectorAll(".star input");
   const bookFormStars = document.querySelectorAll(".star input");
   let rating = 0;
+  let isListenerActive = false;
 
   const preferredScheme = () => getComputedStyle(document.documentElement).getPropertyValue("color-scheme");
   const getStoredLibrary = () =>JSON.parse(localStorage.getItem("lib1a_library"));
@@ -108,7 +143,8 @@ const library1a = ( () => {
       exmpLibData.forEach( book => {
         const newBook = createBook(book);
         currentBookshelf().push(newBook);
-        newBook.createBookcard();
+        container.classList.contains("table") ?
+          newBook.createBookTableRow() : newBook.createBookcard();
       });
       storeLibrary();
     } else {
@@ -138,7 +174,7 @@ const library1a = ( () => {
 
   function handleChangeEvent(ev) {
     ev.preventDefault();
-    if (ev.target.id.endsWith("-read")) {
+    if (ev.target.id.endsWith("-read") || ev.target.id.endsWith("-tab-read")) {
       const readIndex = currentBookshelf().findIndex( book => ev.target.id.startsWith(book.uuid));
       currentBookshelf()[readIndex].read = !currentBookshelf()[readIndex].read;
       storeLibrary();
@@ -164,12 +200,19 @@ const library1a = ( () => {
         Number(ev.target.value) : --currentBookshelf()[rateIndex].rating;
     }
     storeLibrary();
-    setCardStars(currentBookshelf()[rateIndex]);
+    setBookStars(ev, currentBookshelf()[rateIndex]);
   }
 
-  function setCardStars(book) {
-    const currentCard = document.querySelector(`.book-card[data-uuid="${book.uuid}"]`);
-    const allStars = currentCard.querySelectorAll(`.book-rating input`);
+  function setBookStars(ev, book) {
+    let current;
+    let allStars;
+    if (ev.target.id.includes("-tab-")) {
+      current = document.querySelector(`.tab-row[data-uuid="${book.uuid}"]`);
+      allStars = current.querySelectorAll(`.tab-rating .book-rating input`);
+    } else {
+      current = document.querySelector(`.book-card[data-uuid="${book.uuid}"]`);
+      allStars = current.querySelectorAll(`.book-rating input`);
+    }
     allStars.forEach( star => {
       if(star.value <= book.rating) {
         star.checked = true;
@@ -188,14 +231,13 @@ const library1a = ( () => {
     newBookData.push(newBookRating);
     const newBook = createBook(newBookData);
     currentBookshelf().push(newBook);
-    newBook.createBookcard();
-    resetBookForm();
-    storeLibrary();
-  }
-
-  function resetBookForm() {
+    container.classList.contains("table") ?
+      newBook.createBookTableRow() : newBook.createBookcard();
     bookForm.reset();
     bookDialog.close();
+    const scrollTarget = window.innerWidth < 480 ? container : window;
+    scrollTarget.scrollTo( { top: 0, left: 0, behavior: "auto" } );
+    storeLibrary();
   }
 
   function setFormRating(ev) {
@@ -228,7 +270,8 @@ const library1a = ( () => {
       storeIndex(library.length - 1);
       addBookshelfOption(inputBookshelfName.value);
       changeBookshelf();
-      resetBookshelfForm();
+      bookshelfForm.reset();
+      bookshelfDialog.close();
       buttonRemoveBookshelf.removeAttribute("disabled");
     } catch (error) {
       console.error(error);
@@ -236,14 +279,17 @@ const library1a = ( () => {
   }
 
   function changeBookshelf() {
-    container.querySelectorAll("div").forEach( div => div.remove());
+    clearContainer();
     storeIndex(getBookshelfIndex(selectBookshelf.value));
     displayBookshelf();
   }
 
-  function resetBookshelfForm() {
-    bookshelfForm.reset();
-    bookshelfDialog.close();
+  function clearContainer() {
+    if (container.classList.contains("table")) {
+      tableBody.querySelectorAll("tr").forEach( tr => tr.remove());
+    } else {
+      container.querySelectorAll("div").forEach( div => div.remove());
+    }
   }
 
   function displayBookshelf() {
@@ -253,7 +299,8 @@ const library1a = ( () => {
         bookArr.push(book[key]);
       }
       book = createBook(bookArr);
-      book.createBookcard();
+      container.classList.contains("table") ?
+        book.createBookTableRow() : book.createBookcard();
     });
   }
 
@@ -266,7 +313,7 @@ const library1a = ( () => {
       selectBookshelf.querySelector(`[value=${library[getStoredIndex()].name}]`).selected = true;
       changeBookshelf();
     } else {
-      container.querySelectorAll("div").forEach( div => div.remove());
+      clearContainer();
       localStorage.clear();
       buttonRemoveBookshelf.setAttribute("disabled", "");
     }
@@ -280,17 +327,40 @@ const library1a = ( () => {
       currentBookshelf().sort( (a, b) => a.title > b.title ? 1 : -1);
     }
     storeLibrary();
-    changeBookshelf();
+    clearContainer()
+    displayBookshelf();
   }
+
+  const containerWidth = () => document.querySelector("main").offsetWidth;
+  const checkSize = () => containerWidth() < 700 ? changeView() : "";
+  function changeView() {
+    if (!container.classList.contains("table") && !isListenerActive) {
+      window.addEventListener("resize", checkSize);
+      isListenerActive = true;
+    }
+    if (containerWidth() < 700) {
+      window.removeEventListener("resize", checkSize);
+      isListenerActive = false;
+    }
+    clearContainer();
+    if (container.classList.contains("table")) {
+      buttonToggleView.classList.remove("table");
+      container.classList.remove("table");
+    } else {
+      buttonToggleView.classList.add("table");
+      container.classList.add("table");
+    }
+    displayBookshelf();
+  }
+
+  buttonToggleView.addEventListener("click", changeView);
 
   buttonRemoveBookshelf.addEventListener("click", () => document.querySelector("#remove_dialog").show());
   document.querySelector(".confirm-removal").addEventListener("click", removeBookshelf);
 
   bookForm.addEventListener("submit", createNewBook);
-
-  selectBookshelf.addEventListener("change", changeBookshelf);
-
   bookshelfForm.addEventListener("submit", createBookshelf);
+  selectBookshelf.addEventListener("change", changeBookshelf);
 
   inputBookshelfName.addEventListener("input", () => {
     if(library.every( shelf => shelf.name !== inputBookshelfName.value)) {
@@ -302,6 +372,8 @@ const library1a = ( () => {
 
   bookFormStars.forEach( star => star.addEventListener("change", setFormRating));
 
+  document.querySelectorAll(".sort-button").forEach( button => button.addEventListener("click", sortByTitle));
+
   document.querySelector("#info_pop button").addEventListener("click", () => {
     localStorage.clear();
     while(library.length) library.pop();
@@ -312,8 +384,6 @@ const library1a = ( () => {
       preferredScheme() === "light" ? "dark" : "light");
     localStorage.setItem("lib1a_selected-theme", preferredScheme() );
   });
-
-  document.querySelectorAll(".sort-button").forEach( button => button.addEventListener("click", sortByTitle));
 
   document.documentElement.style.setProperty("color-scheme",
     `${ localStorage.getItem("lib1a_selected-theme") || preferredScheme() }`
